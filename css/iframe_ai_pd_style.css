@@ -734,6 +734,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  column-gap: 5px;
 }
 .footer .result-actions #coupon-btn:hover,
 .footer .result-actions #recommend-btn:hover {
