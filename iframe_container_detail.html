@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>產品資訊</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css">
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Chocolate+Classical+Sans&family=Figtree:ital,wght@0,300..900;1,300..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap" />
+  <style>
+    * {
+      font-family: 'Noto Sans TC', 'sans-serif';
+      padding: 0;
+      margin: 0;
+      box-sizing: border-box;
+    }
+    body{
+      padding:0 16px 16px 16px;
+    }
+
+    h2 {
+      color: #1E1E19;
+      text-align: center;
+      /* Headline/CH */
+      font-family: "Noto Sans TC";
+      font-size: 17px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: 22px;
+      /* 129.412% */
+      letter-spacing: 0.34px;
+      padding-bottom: 16px;
+    }
+
+    p {
+      color: #787974;
+      /* Subheadline/CH/Regular */
+      font-family: "Noto Sans TC";
+      font-size: 15px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 20px;
+      /* 133.333% */
+      letter-spacing: 0.12px;
+    }
+
+    p {
+      padding-bottom: 16px;
+    }
+
+    /* Swiper 輪播容器 */
+    .swiper {
+      position: relative;
+      width: 323px;
+      height: 323px;
+      margin: 0 auto 16px;
+      border-radius: 4px;
+    }
+
+    /* Swiper 內的圖片 */
+    .swiper-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 4px;
+    }
+
+    /* Swiper 按鈕 */
+    .custom-nav-container {
+      position: absolute;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      column-gap: 10px;
+      z-index: 999;
+    }
+
+    .custom-nav {
+      border-radius: 100px;
+      background: rgba(30, 30, 25, 0.07);
+      backdrop-filter: blur(20px);
+      display: flex;
+      width: 36px;
+      height: 36px;
+      justify-content: center;
+      align-items: center;
+      border: none;
+      cursor: pointer;
+    }
+
+    .custom-nav:hover {
+      background: rgba(30, 30, 25, 0.5);
+    }
+  </style>
+</head>
+
+<body>
+  <h2>產品資訊</h2>
+  <!-- Swiper 輪播 -->
+  <div class="swiper">
+    <div class="swiper-wrapper">
+      <div class="swiper-slide"><img
+          src="https://shoplineimg.com/614d51f4e46907003ed5765f/641957cd396700002301fd1a/375x.webp?source_format=jpg 375w, https://shoplineimg.com/614d51f4e46907003ed5765f/641957cd396700002301fd1a/540x.webp?source_format=jpg 540w, https://shoplineimg.com/614d51f4e46907003ed5765f/641957cd396700002301fd1a/720x.webp?source_format=jpg 720w, https://shoplineimg.com/614d51f4e46907003ed5765f/641957cd396700002301fd1a/900x.webp?source_format=jpg 900w, https://shoplineimg.com/614d51f4e46907003ed5765f/641957cd396700002301fd1a/1080x.webp?source_format=jpg 1080w, https://shoplineimg.com/614d51f4e46907003ed5765f/641957cd396700002301fd1a/1296x.webp?source_format=jpg 1296w, https://shoplineimg.com/614d51f4e46907003ed5765f/641957cd396700002301fd1a/1512x.webp?source_format=jpg 1512w, https://shoplineimg.com/614d51f4e46907003ed5765f/641957cd396700002301fd1a/2160x.webp?source_format=jpg 2160w, https://shoplineimg.com/614d51f4e46907003ed5765f/641957cd396700002301fd1a/2960x.webp?source_format=jpg 2960w, https://shoplineimg.com/614d51f4e46907003ed5765f/641957cd396700002301fd1a/3260x.webp?source_format=jpg 3260w, https://shoplineimg.com/614d51f4e46907003ed5765f/641957cd396700002301fd1a/3860x.webp?source_format=jpg 3860w"
+          alt="產品2"></div>
+      <div class="swiper-slide"><img
+          src="https://shoplineimg.com/614d51f4e46907003ed5765f/641957cd21a30b00112c3e5c/375x.webp?source_format=jpg 375w, https://shoplineimg.com/614d51f4e46907003ed5765f/641957cd21a30b00112c3e5c/540x.webp?source_format=jpg 540w, https://shoplineimg.com/614d51f4e46907003ed5765f/641957cd21a30b00112c3e5c/720x.webp?source_format=jpg 720w, https://shoplineimg.com/614d51f4e46907003ed5765f/641957cd21a30b00112c3e5c/900x.webp?source_format=jpg 900w, https://shoplineimg.com/614d51f4e46907003ed5765f/641957cd21a30b00112c3e5c/1080x.webp?source_format=jpg 1080w, https://shoplineimg.com/614d51f4e46907003ed5765f/641957cd21a30b00112c3e5c/1296x.webp?source_format=jpg 1296w, https://shoplineimg.com/614d51f4e46907003ed5765f/641957cd21a30b00112c3e5c/1512x.webp?source_format=jpg 1512w, https://shoplineimg.com/614d51f4e46907003ed5765f/641957cd21a30b00112c3e5c/2160x.webp?source_format=jpg 2160w, https://shoplineimg.com/614d51f4e46907003ed5765f/641957cd21a30b00112c3e5c/2960x.webp?source_format=jpg 2960w, https://shoplineimg.com/614d51f4e46907003ed5765f/641957cd21a30b00112c3e5c/3260x.webp?source_format=jpg 3260w, https://shoplineimg.com/614d51f4e46907003ed5765f/641957cd21a30b00112c3e5c/3860x.webp?source_format=jpg 3860w"
+          alt="產品1"></div>
+      <div class="swiper-slide"><img
+          src="https://shoplineimg.com/614d51f4e46907003ed5765f/641957ce5698970017a912fb/375x.webp?source_format=jpg 375w, https://shoplineimg.com/614d51f4e46907003ed5765f/641957ce5698970017a912fb/540x.webp?source_format=jpg 540w, https://shoplineimg.com/614d51f4e46907003ed5765f/641957ce5698970017a912fb/720x.webp?source_format=jpg 720w, https://shoplineimg.com/614d51f4e46907003ed5765f/641957ce5698970017a912fb/900x.webp?source_format=jpg 900w, https://shoplineimg.com/614d51f4e46907003ed5765f/641957ce5698970017a912fb/1080x.webp?source_format=jpg 1080w, https://shoplineimg.com/614d51f4e46907003ed5765f/641957ce5698970017a912fb/1296x.webp?source_format=jpg 1296w, https://shoplineimg.com/614d51f4e46907003ed5765f/641957ce5698970017a912fb/1512x.webp?source_format=jpg 1512w, https://shoplineimg.com/614d51f4e46907003ed5765f/641957ce5698970017a912fb/2160x.webp?source_format=jpg 2160w, https://shoplineimg.com/614d51f4e46907003ed5765f/641957ce5698970017a912fb/2960x.webp?source_format=jpg 2960w, https://shoplineimg.com/614d51f4e46907003ed5765f/641957ce5698970017a912fb/3260x.webp?source_format=jpg 3260w, https://shoplineimg.com/614d51f4e46907003ed5765f/641957ce5698970017a912fb/3860x.webp?source_format=jpg 3860w"
+          alt="產品2"></div>
+    </div>
+
+    <!-- 左右切換按鈕 -->
+    <div class="custom-nav-container">
+      <button class="custom-nav prev-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
+          <path d="M14.6602 18.26L8.90016 12.5L14.6602 6.73999" stroke="white" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" />
+        </svg>
+      </button>
+      <button class="custom-nav next-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
+          <path d="M9.33984 18.26L15.0998 12.5L9.33984 6.73999" stroke="white" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <p>這款產品以<strong>100% NYLON</strong>製成，具備輕盈、防風、高強力、耐磨性及抗張撕裂性，不易變形的特點。</p>
+  <p>特殊袖型剪裁、袖口及下擺設計，袖口、下擺收縮完美抵禦涼風，穿著更顯立體層次感。</p>
+  <p>時髦翻領設計，搭配質感YKK拉鍊，簡單穿搭出休閒率性的造型感。</p>
+  <p>系列聯名精織標，更細的布標織法工藝，探密集針線交織組成環相扣針法細，為整體營造質感簡約永恆。</p>
+  <p>
+    這款產品的設計靈感來自「Ilikeme」，鼓勵我們擁抱真實的自己，與死侍坦然面對自己過去的態度不謀而合。它象徵著死侍用無所畏的厚皮與坦然面對失的態度迎接每一個死去之後「再來一次」的新挑戰，且最大的努力全力以赴面對生活的起起伏伏，每一次的挫折，皆能再次勇敢地站起來。
+  </p>
+  <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // 初始化 Swiper
+      var swiper = new Swiper('.swiper', {
+        loop: true, // 循環播放
+        autoplay: {
+          delay: 3000, // 自動播放間隔（3秒）
+          disableOnInteraction: false, // 使用者互動後仍然繼續播放
+        },
+        navigation: {
+          nextEl: '.next-btn',
+          prevEl: '.prev-btn',
+        },
+      });
+      const prevButton = document.querySelector('.prev-btn');
+      const nextButton = document.querySelector('.next-btn');
+
+      prevButton.addEventListener('click', function () {
+        swiper.slidePrev();
+      });
+
+      nextButton.addEventListener('click', function () {
+        swiper.slideNext();
+      });
+
+    })
+  </script>
+</body>
+
+</html>

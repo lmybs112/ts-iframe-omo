@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>個人專屬優惠</title>
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Chocolate+Classical+Sans&family=Figtree:ital,wght@0,300..900;1,300..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap" />
+  <style>
+    * {
+      font-family: 'Noto Sans TC', 'sans-serif';
+      padding: 0;
+      margin: 0;
+      box-sizing: border-box;
+    }
+
+    h2 {
+      color: #1E1E19;
+      text-align: center;
+      /* Headline/CH */
+      font-family: "Noto Sans TC";
+      font-size: 17px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: 22px;
+      letter-spacing: 0.34px;
+      padding-bottom: 16px;
+    }
+
+    #inf-coupon-content {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.90);
+      border-radius: 18px 18px 0px 0px;
+      backdrop-filter: blur(12.25px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      row-gap: 16px;
+      padding-bottom: 32px;
+    }
+
+    .inf-coupon-text {
+      font-family: "Noto Sans TC";
+      font-size: 17px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: 22px;
+      letter-spacing: 0.34px;
+      color: #1E1E19;
+    }
+
+    .inf-coupon-devider {
+      height: 10px;
+      width: 100%;
+      flex-shrink: 0;
+      align-self: stretch;
+      background-color: #F2F2F2;
+    }
+
+    .inf-coupon-info {
+      padding-top: 32px;
+      padding-bottom: 16px;
+    }
+
+    .inf-coupon-list {
+      width: 100%;
+      padding: 0 16px;
+    }
+
+    .inf-coupon-item {
+      padding: 11px;
+      display: flex;
+      align-items: center;
+      column-gap: 11px;
+    }
+
+    .inf-coupon-item img {
+      border-radius: 4px;
+    }
+
+    .inf-coupon-pd {
+      display: flex;
+      flex-direction: column;
+      row-gap: 4px;
+
+    }
+
+    .inf-coupon-pd div {
+      color: #1E1E19;
+      font-family: "Noto Sans TC";
+      font-size: 15px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: 17px;
+      letter-spacing: 0.3px;
+    }
+
+    .inf-coupon-pd p {
+      color: #787974;
+      font-family: Figtree;
+      font-size: 13px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 15px;
+    }
+  </style>
+</head>
+
+<body>
+  <h2>獨家優惠</h2>
+  <div id="inf-coupon-content">
+    <img src="./../../img/demo-qrcode.png" width="140" height="140" alt="coupon" />
+    <div class="inf-coupon-text">適用於 XYZ 實體店面任一商品</div>
+  </div>
+  <div class="inf-coupon-devider"></div>
+  <div>
+    <h2 class="inf-coupon-info">專屬資訊</h2>
+    <div class="inf-coupon-list">
+      <!-- <div class="inf-coupon-item">
+        <img src="./../../img/demo-qrcode.png" height="50" width="50" />
+        <div class="inf-coupon-pd">
+          <div>碎花休閒米白棉麻洋裝</div>
+          <p>ID: NNK749312</p>
+        </div>
+      </div> -->
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      console.error('DOMContentLoaded================================')
+      window.addEventListener("message", async (event) => {
+        console.error('event---------------', event);
+        console.error('event.data.list', event.data.list);
+        if (event.data.header == "coupon_list") {
+          const list = document.querySelector('.inf-coupon-list')
+          list.innerHTML = ""; // 清空列表，避免重複添加
+
+         (event.data.list).forEach((pd) => {
+          console.error('pd', pd)
+            // 創建優惠券項目元素
+            const couponItem = document.createElement("div");
+            couponItem.classList.add("inf-coupon-item");
+
+            // 創建圖片元素
+            const img = document.createElement("img");
+            img.src = pd.Imgsrc || "./../../img/img-default-large.png"; // 預設圖片
+            img.width = 50;
+            img.height = 50;
+
+            // 產品資訊容器
+            const pdContainer = document.createElement("div");
+            pdContainer.classList.add("inf-coupon-pd");
+
+            // 產品名稱
+            const nameDiv = document.createElement("div");
+            nameDiv.textContent = pd.ItemName || "未命名商品";
+
+            // 產品 ID
+            const idPara = document.createElement("p");
+            idPara.textContent = `ID: ${pd.id || "未知 ID"}`;
+
+            // 組合元素
+            pdContainer.appendChild(nameDiv);
+            pdContainer.appendChild(idPara);
+            couponItem.appendChild(img);
+            couponItem.appendChild(pdContainer);
+            list.appendChild(couponItem);
+          });
+        }
+      });
+    })
+  </script>
+</body>
+
+</html>
