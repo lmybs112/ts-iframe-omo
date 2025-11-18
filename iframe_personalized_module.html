@@ -168,15 +168,24 @@
     .four-elements .image-container img {
       height: 100%;
     }
+    .three-elements .image-container > div {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .three-elements .image-container img {
+        height: auto !important;
+        object-fit: contain;
+      }
 
     .three-elements .axd_selection {
       width: 33.33333333333333%;
       height: 100%;
     }
 
-    .three-elements .axd_selection img:not(.c-recom) {
+    /* .three-elements .axd_selection img:not(.c-recom) {
       min-height: 220px;
-    }
+    } */
 
     @media (min-width: 480px) {
       .four-elements .axd_selection {

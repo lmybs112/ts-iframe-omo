@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OMO Virtual Try-On V1</title>
+  <style>
+    /* 基本樣式重置 */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body, html {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    /* 主容器樣式 */
+    .main-container {
+      position: relative;
+      width: 100%;
+      max-height: 100dvh;
+      overflow: hidden;
+      height: 100vh;
+      background-image: url('https://shoplineimg.com/5bbdb8375f9cf10005b5b87e/67c7d15cf0eb96000b63e391/2960x.webp?source_format=jpg');
+      background-position: top;
+      background-repeat: no-repeat;
+      background-size: contain;
+    }
+
+    /* Loading 容器樣式 */
+    .loading-container {
+      height: 100%;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .loading-container.hidden {
+      display: none;
+    }
+
+    /* Loading 動畫樣式 */
+    .inf-loading {
+      width: 50px;
+      height: 50px;
+      border: 5px solid #f3f3f3;
+      border-top: 5px solid #3498db;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Preview Box 樣式 */
+    #preview_box {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      top: 0px;
+      left: 0px;
+      z-index: 2147483647;
+      background: rgba(0, 0, 0, 0.36);
+      transform: none;
+    }
+
+    #inffits_cblock {
+      z-index: 60;
+      display: block;
+      position: absolute;
+      inset: 0;
+    }
+
+    #tryon {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    #tryon.hidden {
+      display: none;
+    }
+
+    #iframeContainer {
+      width: 480px;
+      aspect-ratio: 1;
+      position: relative;
+    }
+
+    #inffits_tryon_window {
+      height: 100%;
+      width: 100%;
+      visibility: visible;
+      position: relative;
+      border: none;
+      outline: none;
+      z-index: 14;
+      max-width: 95vw;
+      margin: 0 auto;
+      /* background-color: white; */
+      border-radius: 28px;
+    }
+
+    /* 響應式設計 */
+    @media (max-width: 480px) {
+      #iframeContainer {
+        width: 355px;
+      }
+      #inffits_tryon_window {
+        max-height: 355px;
+      }
+    }
+
+    /* Dialog 基本樣式 */
+    dialog#infDialog {
+      min-width: 355px;
+      height: 500px;
+      border: none;
+      border-radius: 21px;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.98);
+      box-shadow: 0px 0px 18px 0px rgba(0, 0, 0, 0.05), 0px -10px 72px 0px rgba(0, 0, 0, 0.18);
+      backdrop-filter: blur(40px);
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      margin: 0;
+      padding-top: 32px;
+      padding-bottom: 16px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease-out;
+    }
+
+    @media (min-width: 480px) {
+      dialog#infDialog {
+        width: 480px;
+        border-radius: 28px;
+      }
+    }
+
+    dialog#infDialog.fade-in {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* 讓 dialog 置中 */
+    dialog#infDialog::backdrop {
+      background: transparent;
+    }
+
+    /* Dialog 內部內容 */
+    #infDialog .dialog-content {
+      height: 100%;
+    }
+
+    /* 關閉按鈕 */
+    #infDialog .close {
+      position: absolute;
+      right: 8px;
+      top: 8px;
+      font-size: 28px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="main-container" id="mainContainer">
+    <!-- Loading 指示器 -->
+    <div class="loading-container" id="loadingContainer">
+      <div class="inf-loading"></div>
+    </div>
+
+    <!-- Preview Box -->
+    <div id="preview_box">
+      <div id="inffits_cblock">
+        <div id="tryon" class="hidden">
+          <div id="iframeContainer">
+            <iframe
+              id="inffits_tryon_window"
+              src=""
+            ></iframe>
+          </div>
+          
+          <!-- Dialog 彈窗 -->
+          <dialog id="infDialog">
+            <div class="dialog-content">
+              <span class="close" id="closeDialogBtn">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="28"
+                  height="29"
+                  viewBox="0 0 28 29"
+                  fill="none"
+                >
+                  <path
+                    d="M21 7.5L7 21.5"
+                    stroke="#A3A39F"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M7 7.5L21 21.5"
+                    stroke="#A3A39F"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </span>
+              <iframe
+                id="infDialogFrame"
+                frameborder="0"
+                width="100%"
+                height="100%"
+              ></iframe>
+            </div>
+          </dialog>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 全局變數定義
+    let loading = true;
+    let resList = [];
+    let brand = "INFS";
+    let pendingDialogAnimation = false;
+
+    // DOM 元素引用
+    const mainContainer = document.getElementById("mainContainer");
+    const loadingContainer = document.getElementById("loadingContainer");
+    const tryonContainer = document.getElementById("tryon");
+    const demoIframe = document.getElementById("inffits_tryon_window");
+    const dialogFrame = document.getElementById("infDialogFrame");
+    const infDialog = document.getElementById("infDialog");
+    const closeDialogBtn = document.getElementById("closeDialogBtn");
+
+    /**
+     * 從 URL hash 中獲取 brand 參數
+     * @returns {string} brand 名稱，預設為 "INFS"
+     */
+    function getBrandFromHash() {
+      const hash = window.location.hash.replace("#", ""); // 移除 #
+      const params = new URLSearchParams(hash);
+      return params.get("brand") || "INFS";
+    }
+
+    /**
+     * 更新 loading 狀態
+     * @param {boolean} isLoading - 是否顯示 loading
+     */
+    function setLoading(isLoading) {
+      loading = isLoading;
+      if (isLoading) {
+        loadingContainer.classList.remove("hidden");
+        tryonContainer.classList.add("hidden");
+      } else {
+        loadingContainer.classList.add("hidden");
+        tryonContainer.classList.remove("hidden");
+      }
+    }
+
+    /**
+     * 處理來自 iframe 的訊息
+     * @param {MessageEvent} event - 訊息事件
+     */
+    function handleMessage(event) {
+      // 確保來自可信來源，避免安全風險
+      if (event.data.type === "openCouponDialog") {
+        resList = event.data.list;
+        openInfDialog("https://ts-iframe-omo.vercel.app/iframe_container_coupon.html");
+      }
+      if (event.data.type === "openDetailDialog") {
+        openInfDialog("https://ts-iframe-omo.vercel.app/iframe_container_detail.html");
+      }
+    }
+
+    /**
+     * 關閉優惠券彈窗
+     */
+    function closeCoupon() {
+      console.log("handleClickOutside");
+      if (demoIframe && demoIframe.contentWindow) {
+        const iframe_close_coupon_obj = {
+          header: "close_coupon_recommend"
+        };
+        demoIframe.contentWindow.postMessage(iframe_close_coupon_obj, "*");
+      }
+    }
+
+    /**
+     * 開啟 Dialog 彈窗
+     * @param {string} src - iframe 來源 URL
+     */
+    function openInfDialog(src) {
+      // 重置 iframe src 以確保重新載入
+      dialogFrame.src = "";
+      dialogFrame.src = src;
+      
+      infDialog.showModal();
+      
+      // 使用 animationframe 結合 flag 來確保動畫正確觸發
+      // 這比 setTimeout 更可靠，因為它會在下一個繪製週期執行
+      pendingDialogAnimation = true;
+      requestAnimationFrame(() => {
+        if (pendingDialogAnimation) {
+          requestAnimationFrame(() => {
+            infDialog.classList.add("fade-in"); // 加入透明度動畫
+            pendingDialogAnimation = false;
+          });
+        }
+      });
+
+      if (src.includes("coupon")) {
+        dialogFrame.onload = () => {
+          if (dialogFrame && dialogFrame.contentWindow) {
+            const iframe_obj = {
+              header: "coupon_list",
+              list: JSON.parse(JSON.stringify(resList))
+            };
+            console.error("iframe_obj--------------------------------", iframe_obj);
+            dialogFrame.contentWindow.postMessage(iframe_obj, "*");
+          }
+        };
+      }
+    }
+
+    /**
+     * 關閉 Dialog 彈窗
+     */
+    function closeInfDialog() {
+      infDialog.classList.remove("fade-in"); // 先觸發淡出效果
+      pendingDialogAnimation = false;
+      
+      // 使用 transition 結束事件代替 setTimeout 以避免使用不可靠的 hack
+      const handleTransitionEnd = () => {
+        infDialog.close();
+        infDialog.removeEventListener("transitionend", handleTransitionEnd);
+      };
+      infDialog.addEventListener("transitionend", handleTransitionEnd);
+    }
+
+    /**
+     * 初始化應用程式
+     */
+    function init() {
+      // 獲取 brand 參數
+      brand = getBrandFromHash();
+      demoIframe.src="https://ts-iframe-no-media.vercel.app/iframe_container_module_omo_v1.html";
+
+      // 設置 iframe 來源（V1 版本使用 iframe_container_module_v1.html）
+      // demoIframe.src = "http://127.0.0.1:5500/iframe_container_module_v1.html";
+      // demoIframe.src = "https://ts-iframe-omo.vercel.app/iframe_container_module.html";
+      // demoIframe.src = "https://ts-iframe-omo.vercel.app/iframe_container_module_v1.html";
+
+      // 監聽 iframe 載入完成
+      demoIframe.onload = () => {
+        // iframe 載入完成後移除 loading 狀態
+        setLoading(false);
+        
+        const iframe_preview_obj = {
+          // id: `${brand.toUpperCase()}_All`,
+          id: "2025-07-29-06-07-36-3",
+          header: "from_preview",
+          brand: brand.toUpperCase()
+        };
+        demoIframe.contentWindow.postMessage(iframe_preview_obj, "*");
+      };
+
+      // 監聽 postMessage 事件
+      window.addEventListener("message", handleMessage);
+
+      // 監聽主容器點擊事件（用於關閉優惠券）
+      mainContainer.addEventListener("click", closeCoupon);
+
+      // 監聽關閉按鈕點擊事件
+      closeDialogBtn.addEventListener("click", closeInfDialog);
+
+      // 清理函數（頁面卸載時）
+      window.addEventListener("beforeunload", () => {
+        window.removeEventListener("message", handleMessage);
+      });
+    }
+
+    // 當 DOM 載入完成後初始化
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", init);
+    } else {
+      // DOM 已經載入完成
+      init();
+    }
+  </script>
+</body>
+</html>

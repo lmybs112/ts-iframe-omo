@@ -1303,15 +1303,6 @@ $(document).on("click", function (event) {
       $("#coupon-overlay").remove();
     });
   }
-  if (
-    !$(event.target).closest("#coupon-content").length && // 點擊 #coupon-content 外部
-    !$(event.target).is("#coupon-btn") // 不是點擊 #coupon-btn
-  ) {
-    // $("#coupon-content").animate({ bottom: "-231px" }, 500, function () {
-    //   $("#coupon-content").remove(); // 動畫結束後移除 DOM
-    //   $("#coupon-overlay").remove();
-    // });
-  }
 });
 $("#recommend-btn").on(tap, function () {
   $("#loadingbar_recom").hide();

@@ -1,0 +1,540 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Send EDM Email</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Send EDM Email</h2>
+      <button id="sendEmailBtn">Send Email</button>
+    </div>
+
+    <template id="emailTemplate">
+      <!doctype html>
+      <html lang="en">
+        <head>
+          <meta charset="UTF-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+          <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+          <title>INFITS EDM</title>
+          <style type="text/css">
+            body,
+            table,
+            td,
+            a,
+            img {
+              -webkit-text-size-adjust: 100%;
+              -ms-text-size-adjust: 100%;
+            }
+            table,
+            td {
+              mso-table-lspace: 0pt;
+              mso-table-rspace: 0pt;
+            }
+            img {
+              -ms-interpolation-mode: bicubic;
+              border: 0;
+              line-height: 100%;
+              outline: none;
+              text-decoration: none;
+            }
+            body {
+              margin: 0;
+              padding: 0;
+              width: 100% !important;
+            }
+            .container {
+              width: 100%;
+              max-width: 600px;
+            }
+            .embeddedItem__imgBox {
+              width: 100%;
+              height: 226px;
+            }
+            @media only screen and (max-width: 600px) {
+              .container {
+                width: 100% !important;
+                max-width: none !important;
+              }
+              .full-width {
+                width: 100% !important;
+              }
+              .hide-on-mobile {
+                display: none !important;
+              }
+              .stack-on-mobile {
+                display: block !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                padding-right: 0 !important;
+                padding-bottom: 36px !important;
+                /* margin-bottom: 36px !important; */
+              }
+              /* .stack-on-mobile:last-child {
+                        padding-bottom: 0 !important;
+                        margin-bottom: 0 !important;
+                    } */
+              .embeddedItem__imgBox {
+                height: 353px !important;
+                width: 353px !important;
+              }
+              img {
+                width: 100% !important;
+                max-width: none !important;
+                height: 100% !important;
+              }
+              .greeting-text {
+                text-align: center !important;
+              }
+              .padding-adjust {
+                padding-left: 20px !important;
+                padding-right: 20px !important;
+              }
+              .product-section {
+                padding-left: 20px !important;
+                padding-right: 20px !important;
+              }
+              .hero-section {
+                padding-left: 20px !important;
+                padding-right: 20px !important;
+              }
+              .embeddedItemInfo__title {
+                max-width: 353px !important;
+              }
+            }
+          </style>
+        </head>
+        <body style="background-color: #f4f4f4; margin: 0; padding: 0">
+          <table
+            border="0"
+            cellpadding="0"
+            cellspacing="0"
+            width="100%"
+            style="background-color: #f4f4f4"
+          >
+            <tr>
+              <td align="center" valign="top">
+                <table
+                  border="0"
+                  cellpadding="0"
+                  cellspacing="0"
+                  class="container"
+                  width="600"
+                  style="max-width: 600px; background-color: #ffffff"
+                >
+                  <tr>
+                    <td class="hero-section" align="center" style="padding: 0">
+                      <img
+                        src="http://inffits-new-officialwebsite.s3-website-ap-northeast-1.amazonaws.com/hero-bg.png"
+                        alt="Hero Image"
+                        style="width: 100%; height: 400px"
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      class="greeting-text padding-adjust"
+                      align="left"
+                      style="
+                        padding: 48px 64px;
+                        font-family: Arial, sans-serif;
+                        font-size: 16px;
+                        color: #333333;
+                        line-height: 24px;
+                      "
+                    >
+                      <p
+                        style="
+                          margin: 0;
+                          color: #000;
+                          font-family: Figtree, Arial, sans-serif;
+                          font-size: 24px;
+                          font-weight: 700;
+                          line-height: 26px;
+                          padding-bottom: 32px;
+                        "
+                      >
+                        Hi Duo,
+                      </p>
+                      <p
+                        style="
+                          color: #1e1e19;
+                          font-family: 'Noto Sans TC', Arial, sans-serif;
+                          font-size: 16px;
+                          font-weight: 400;
+                          line-height: 21px;
+                          letter-spacing: 0.32px;
+                        "
+                      >
+                        根據你的喜好，這些精選推薦正是為你量身打造的風格之選。此外，別錯過專屬優惠，為你的選擇增添更多驚喜。
+                      </p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="product-section" align="center" style="padding: 0 64px">
+                      <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                        <tr>
+                          <td
+                            class="stack-on-mobile product-placeholder"
+                            width="50%"
+                            style="
+                              width: 50%;
+                              max-width: 50%;
+                              box-sizing: border-box;
+                              padding-right: 20px;
+                              padding-bottom: 32px;
+                            "
+                          ></td>
+                          <td
+                            class="stack-on-mobile product-placeholder"
+                            width="50%"
+                            style="
+                              width: 50%;
+                              max-width: 50%;
+                              box-sizing: border-box;
+                              padding-bottom: 32px;
+                            "
+                          ></td>
+                        </tr>
+                        <tr>
+                          <td
+                            class="stack-on-mobile product-placeholder"
+                            width="50%"
+                            style="
+                              width: 50%;
+                              max-width: 50%;
+                              box-sizing: border-box;
+                              padding-right: 20px;
+                            "
+                          ></td>
+                          <td
+                            class="stack-on-mobile product-placeholder"
+                            width="50%"
+                            style="width: 50%; max-width: 50%; box-sizing: border-box"
+                          ></td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      class="padding-adjust"
+                      align="left"
+                      style="
+                        padding: 48px 64px;
+                        font-family: Arial, sans-serif;
+                        font-size: 16px;
+                        color: #333333;
+                        line-height: 24px;
+                      "
+                    >
+                      <p
+                        style="
+                          color: #1e1e19;
+                          font-family: 'Noto Sans TC', Arial, sans-serif;
+                          font-size: 16px;
+                          font-weight: 400;
+                          line-height: 21px;
+                          letter-spacing: 0.32px;
+                        "
+                      >
+                        心動不如馬上行動! 使用折扣碼
+                        <span style="color: #e65824">[GIFT2025]</span> 享有 9
+                        折優惠，把握最佳時機入手你的風格代表作!
+                      </p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="padding-adjust" align="center" style="padding-bottom: 48px">
+                      <table border="0" cellpadding="0" cellspacing="0">
+                        <tr>
+                          <td
+                            align="center"
+                            style="
+                              background-color: rgba(0, 0, 0, 0.95);
+                              padding: 14px 20px;
+                              border-radius: 8px;
+                            "
+                          >
+                            <a
+                              href="#"
+                              style="
+                                color: #fff;
+                                font-family: 'Noto Sans TC', Arial, sans-serif;
+                                font-size: 17px;
+                                font-weight: 500;
+                                line-height: 22px;
+                                letter-spacing: 0.34px;
+                                text-decoration: none;
+                              "
+                              >前往購物</a
+                            >
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      class="padding-adjust"
+                      align="left"
+                      style="padding: 64px; background-color: #000000"
+                    >
+                      <img
+                        src="http://inffits-new-officialwebsite.s3-website-ap-northeast-1.amazonaws.com/infFITS_LOGO-light.png"
+                        alt="infFITS_LOGO"
+                        style="
+                          width: 100px;
+                          max-width: 100px;
+                          max-height: 22px;
+                          object-fit: contain;
+                          margin-bottom: 72px;
+                          display: block;
+                        "
+                      />
+                      <p style="margin-bottom: 14px">
+                        <a
+                          href="#"
+                          style="
+                            color: #e8e8e8;
+                            font-family: 'Noto Sans TC', Arial, sans-serif;
+                            font-size: 16px;
+                            line-height: 18px;
+                            letter-spacing: 0.32px;
+                            font-weight: 500;
+                            text-decoration: none;
+                          "
+                          >取消訂閱</a
+                        >
+                      </p>
+                      <p style="margin-bottom: 14px">
+                        <a
+                          href="#"
+                          style="
+                            color: #e8e8e8;
+                            font-family: 'Noto Sans TC', Arial, sans-serif;
+                            font-size: 16px;
+                            line-height: 18px;
+                            letter-spacing: 0.32px;
+                            font-weight: 500;
+                            text-decoration: none;
+                          "
+                          >隱私權聲明</a
+                        >
+                      </p>
+                      <p style="margin-bottom: 36px">
+                        <a
+                          href="#"
+                          style="
+                            color: #e8e8e8;
+                            font-family: 'Noto Sans TC', Arial, sans-serif;
+                            font-size: 16px;
+                            line-height: 18px;
+                            letter-spacing: 0.32px;
+                            font-weight: 500;
+                            text-decoration: none;
+                          "
+                          >使用條款</a
+                        >
+                      </p>
+                      <p
+                        style="
+                          color: #a3a39f;
+                          font-family: 'Figtree', Arial, sans-serif;
+                          font-size: 16px;
+                          line-height: 21px;
+                          font-weight: 500;
+                        "
+                      >
+                        infFITS (飛德科技股份有限公司)<br />
+                        Hsinchu City, Taiwan
+                      </p>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </body>
+      </html>
+    </template>
+
+
+    <script>
+      var Brand = 'JERSCY'
+
+      function ids_init() {
+        var makeid = function (length) {
+          var result = ''
+          var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+          var charactersLength = characters.length
+          for (var i = 0; i < length; i++) {
+            result += characters.charAt(Math.floor(Math.random() * charactersLength))
+          }
+          return result
+        }
+
+        var member_id = ''
+        var lgiven_id = ''
+        var skuContent = '627b5ab044a027000fde0add'
+
+        var lgvid_exist = false
+        try {
+          if (typeof localStorage['LGVID'] !== 'undefined') {
+            lgvid_exist = true
+          }
+        } catch (e) {
+          lgvid_exist = false
+        }
+        if (lgvid_exist) {
+          lgiven_id = localStorage['LGVID']
+        } else {
+          lgiven_id = makeid(20)
+          localStorage.setItem('LGVID', lgiven_id)
+        }
+
+        return { member_id: member_id, lgiven_id: lgiven_id, skuContent: skuContent }
+      }
+
+      function getEmbeddedAds(ids) {
+        const requestData = {
+          Brand: Brand,
+          LGVID: ids.lgiven_id,
+          MRID: ids.member_id,
+          recom_num: '12',
+          PID: ids.skuContent,
+          ctype_val: JSON.stringify(['underwear'])
+        }
+        const options = {
+          method: 'POST',
+          headers: {
+            accept: 'application/json',
+            'content-type': 'application/json'
+          },
+          body: JSON.stringify(requestData)
+        }
+
+        function getRandomElements(arr, count) {
+          const result = []
+          const usedIndexes = new Set()
+          while (result.length < count) {
+            const randomIndex = Math.floor(Math.random() * arr.length)
+            if (!usedIndexes.has(randomIndex)) {
+              result.push(arr[randomIndex])
+              usedIndexes.add(randomIndex)
+            }
+          }
+          return result
+        }
+
+        return fetch(
+          'https://gha6kqf5ff.execute-api.ap-northeast-1.amazonaws.com/v0/extension/recom_product',
+          options
+        )
+          .then((response) => response.json())
+          .then((response) => {
+            let jsonData = getRandomElements(response['bhv'], 12).map((item) => {
+              let newItem = Object.assign({}, item)
+              newItem.sale_price = item.sale_price
+                ? parseInt(item.sale_price.replace(/\D/g, '')).toLocaleString()
+                : ''
+              newItem.price = parseInt(item.price.replace(/\D/g, '')).toLocaleString()
+              return newItem
+            })
+            return jsonData
+          })
+          .catch((err) => {
+            console.error('API Error:', err)
+            throw err
+          })
+      }
+
+      function generateProductHtml(images) {
+        return images.slice(0, 4).map((img) => {
+          return `
+                    <a class="embeddedItem" href="${img.link}" target="_blank" data-title="${img.title}" data-link="${img.link}" style="text-decoration: none; color: #333333; display: block; width: 100%; overflow: hidden;">
+                        <div class="embeddedItem__img">
+                            <div class="embeddedItem__imgBox" style="background-color: #efefef;height: 226px;width:226px">
+                                <img src="${img.image_link}" alt="${img.description}" style="width: 100%; max-width: 100%; height: 100%; object-fit: cover; display: block;">
+                            </div>
+                        </div>
+                        <div class="embeddedItemInfo" style="overflow: hidden;">
+                            <h3 class="embeddedItemInfo__title" style="font-family: Arial, 'Noto Sans TC', sans-serif; font-size: 16px; color: #3B3B32; margin: 10px 0 5px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block; max-width: 240px; line-height: 20px; height: 20px;">${img.title}</h3>
+                            ${
+                              img.sale_price && img.sale_price !== img.price
+                                ? `<div class="embeddedItemInfo__content" style="font-family: Arial, 'Noto Sans TC', sans-serif; font-size: 14px; color: #333333; margin: 0; text-align: center; display: block; overflow: hidden;">
+                                        <p class="embeddedItemInfo__discount" style="color: #eb7454; background: white; border: 1px solid #eb7454; padding: 2px 6px; border-radius: 5px; font-size: 12px; font-weight: bold; margin: 0 8px 0 0; display: inline-block; max-width: 60px;">${Math.ceil(
+                                          100 -
+                                            (parseInt(img.sale_price.replace(',', '')) * 100) /
+                                              parseInt(img.price.replace(',', ''))
+                                        )}% off</p>
+                                        <p class="embeddedItemInfo__price" style="color: #eb7454; font-size: 14px; font-weight: 500; margin: 0; display: inline-block;">NT$ ${img.sale_price}</p>
+                                    </div>`
+                                : `<div class="embeddedItemInfo__content" style="font-family: Arial, 'Noto Sans TC', sans-serif; font-size: 14px; color: #333333; margin: 0; text-align: center; display: block; overflow: hidden;"> 
+                                        <p class="embeddedItemInfo__discount" style="color: #eb7454; background: white; border: 1px solid #eb7454; padding: 2px 6px; border-radius: 5px; font-size: 12px; font-weight: bold; margin: 0 8px 0 0; display: inline-block; max-width: 60px;">5% off</p>               
+                                        <p class="embeddedItemInfo__price" style="color: #eb7454; font-size: 14px; font-weight: 500; margin: 0; display: inline-block;">NT$ ${img.price}</p>
+                                    </div>`
+                            }
+                        </div>
+                    </a>
+                `
+        })
+      }
+
+      $(document).ready(function () {
+        $('#sendEmailBtn').on('click', function () {
+          const ids = ids_init()
+          getEmbeddedAds(ids)
+            .then((jsonData) => {
+              const template = document.getElementById('emailTemplate').content.cloneNode(true)
+              const productHtmlArray = generateProductHtml(jsonData)
+
+              if (jsonData.length >= 4) {
+                const placeholders = template.querySelectorAll('.product-placeholder')
+                placeholders[0].innerHTML = productHtmlArray[0]
+                placeholders[1].innerHTML = productHtmlArray[1]
+                placeholders[2].innerHTML = productHtmlArray[2]
+                placeholders[3].innerHTML = productHtmlArray[3]
+              } else {
+                console.warn('Not enough products returned from API')
+                alert('商品數據不足，無法生成 EDM')
+                return
+              }
+
+              const emailTemplate = new XMLSerializer().serializeToString(template)
+
+              $.ajax({
+                url: 'https://1r67xu2nn6.execute-api.ap-northeast-1.amazonaws.com/default/mail_edm_invoke',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                  to_email: 'lmybs112@gmail.com',
+                  subject: '每件商品都是你的風格代表作，獻給獨樹一幟的你。',
+                  html_body: emailTemplate
+                }),
+                success: function (response) {
+                  console.log('✅ Email sent successfully:', response)
+                  alert('寄信成功！')
+                },
+                error: function (xhr, status, error) {
+                  console.error('❌ Email sending failed:', {
+                    status,
+                    error,
+                    response: xhr.responseText
+                  })
+                  alert('發送失敗，請查看控制台日誌')
+                }
+              })
+            })
+            .catch((err) => {
+              console.error('Failed to fetch products:', err)
+              alert('獲取商品數據失敗，請查看控制台')
+            })
+        })
+      })
+    </script>
+  </body>
+</html>

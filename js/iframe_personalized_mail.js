@@ -10,8 +10,13 @@ let current_Route;
 let all_Route;
 let isFirst = true;
 let throttleTimer = null;
-let isForPreview = window.location.href.includes("myinffits") || window.location.href.includes("localhost")|| window.location.href.includes("personalized")
+let isForPreview =
+  window.location.href.includes("myinffits") ||
+  window.location.href.includes("localhost") ||
+  window.location.href.includes("personalized");
 var resList;
+let edmResult;
+let edmJsonData;
 function throttle(fn, delay) {
   let isFirstCall = true; // 用來判斷是否是第一次調用
   return function (...args) {
@@ -82,13 +87,37 @@ $(document).ready(function () {
   $("#containerback").show();
 
   // fetchData();
+  updateSubscribeBtnState();
+
+  // 輸入時即時更新按鈕狀態
+  $("#subscribeMail").on("input", updateSubscribeBtnState);
 });
+
+function updateSubscribeBtnState() {
+  const isEmpty = $("#subscribeMail").val().trim() === "";
+  $("#subscribeBtn").prop("disabled", isEmpty);
+}
 const get_recom_res = () => {
-  $("#loadingbar_recom").show();
+  $("#email_page").show();
+  const ids = ids_init();
+  getEmbeddedAds(ids)
+    .then((jsonData) => {
+      edmJsonData = jsonData;
+      const messageData = {
+        type: "send-edm-items",
+        value: JSON.stringify(jsonData),
+      };
+      window.parent.postMessage(messageData, "*");
+      $("#email-skip").prop("disabled", false);
+    })
+    .catch((err) => {
+      console.error("Failed to fetch products:", err);
+    });
+  // $("#loadingbar_recom").show();
   var resultActions = document.querySelector(".result-actions");
   // 禁用該元素的點擊操作
   if (resultActions) {
-    resultActions.style.pointerEvents = 'none';
+    resultActions.style.pointerEvents = "none";
   }
   const formatTags = Object.fromEntries(
     Object.entries(tags_chosen)
@@ -109,8 +138,9 @@ const get_recom_res = () => {
   };
 
   // console.log("tags chosen:", tags_chosen);
-  var INFS_ROUTE_ORDER = !isForPreview ?
-    JSON.parse(localStorage.getItem(`INFS_ROUTE_ORDER_${Brand}`)) || [] : [];
+  var INFS_ROUTE_ORDER = !isForPreview
+    ? JSON.parse(localStorage.getItem(`INFS_ROUTE_ORDER_${Brand}`)) || []
+    : [];
   INFS_ROUTE_ORDER.forEach((item, index) => {
     if (deepEqualWithoutKey(item, current_route_path, ["Record"])) {
       INFS_ROUTE_ORDER[index] = {
@@ -119,8 +149,9 @@ const get_recom_res = () => {
       };
     }
   });
-  var INFS_ROUTE_RES = !isForPreview ?
-    JSON.parse(localStorage.getItem(`INFS_ROUTE_RES_${Brand}`)) || [] : [];
+  var INFS_ROUTE_RES = !isForPreview
+    ? JSON.parse(localStorage.getItem(`INFS_ROUTE_RES_${Brand}`)) || []
+    : [];
 
   const matchIndex = INFS_ROUTE_ORDER.findIndex((item) =>
     deepEqualWithoutKey(item, current_route_path, ["Record"])
@@ -142,7 +173,6 @@ const get_recom_res = () => {
         JSON.stringify(INFS_ROUTE_RES)
       );
     }
-
   }
   // tags_chosen = {};
 
@@ -152,13 +182,25 @@ const get_recom_res = () => {
   )
     .then((response) => response.json())
     .then((response) => {
+      edmResult = response.Item.map(({ ItemName, Imgsrc, Link, price,sale_price, ...rest }) => {
+        return {
+          link: Link,
+          image_link: Imgsrc,
+          title: ItemName,
+          price: price.replace('NT$', ''),
+          sale_price: sale_price.replace('NT$', ''),
+          ...rest
+        };
+      });
       // setTimeout(() => {
       const messageData = {
         type: "result",
         tags_chosen: tags_chosen,
         item: response.Item,
+        edmResult: edmResult,
         value: true,
       };
+
       window.parent.postMessage(messageData, "*");
       console.error("Message", response);
       // show_results(response);
@@ -170,7 +212,7 @@ const get_recom_res = () => {
     .finally(() => {
       setTimeout(() => {
         $("#loadingbar_recom").fadeOut(500);
-      }, 2200)
+      }, 2200);
     });
 };
 
@@ -237,7 +279,7 @@ const show_results = (response) => {
   // 如果項目數量小於 5，只顯示所有可用的項目
   const userAgent = navigator.userAgent.toLowerCase();
   const isMobile = /mobile|android|iphone|ipod|phone/.test(userAgent);
-  const displayCount = Math.min(itemCount, isMobile?5:3);
+  const displayCount = Math.min(itemCount, isMobile ? 5 : 3);
   // function getRandomNumbers(max, count) {
   //   let randomNumbers = [];
   //   while (randomNumbers.length < count) {
@@ -285,16 +327,16 @@ const show_results = (response) => {
       <div class="axd_selection cursor-pointer update_delete">
  <a href="#"  class="update_delete" style="text-decoration: none;" onclick="openDetailDialog()">
     <div style="overflow: hidden;">
-         <img class="c-recom" id="container-recom-${i}" data-item="0"  src="./../../img/img-default-large.png" data-src=" ${response.Item[i].Imgsrc
-      }" onerror="this.onerror=null;this.src='./../../img/img-default-large.png'"
+         <img class="c-recom" id="container-recom-${i}" data-item="0"  src="./../../img/img-default-large.png" data-src=" ${
+      response.Item[i].Imgsrc
+    }" onerror="this.onerror=null;this.src='./../../img/img-default-large.png'"
          ></div>
          <div class="recom-info">
          <p class="recom-text item-title line-ellipsis-2" id="recom-${i}-text">${ItemName}</p>
            <div class="discount-content" style="display: none">
-             <p class="item-price recom-price">${response.Item[i].sale_price ||
-      response.Item[i].price ||
-      "-"
-      }</p>
+             <p class="item-price recom-price">${
+               response.Item[i].sale_price || response.Item[i].price || "-"
+             }</p>
              </div>
          </div>
  </a>
@@ -418,13 +460,12 @@ const show_results = (response) => {
   // 禁用該元素的點擊操作
   if (resultActions) {
     setTimeout(() => {
-      resultActions.style.pointerEvents = 'auto';
-    }, 1500)
+      resultActions.style.pointerEvents = "auto";
+    }, 1500);
   }
-
 };
 
-function openDetailDialog (){
+function openDetailDialog() {
   event.preventDefault(); // 阻止 a 標籤的預設行為
   const messageData = {
     type: "openDetailDialog",
@@ -471,9 +512,9 @@ const fetchData = async () => {
     // 塞空值
     const response = await fetch(
       "https://xjsoc4o2ci.execute-api.ap-northeast-1.amazonaws.com/v0/extension/run_product?Brand=" +
-      Brand +
-      "&ClothID=" +
-      ClothID,
+        Brand +
+        "&ClothID=" +
+        ClothID,
       options
     );
     const data = await response.json();
@@ -482,10 +523,12 @@ const fetchData = async () => {
     current_Route = obj.Product.Routes[0]["Route"] || "";
     all_Route = obj.Product.Routes[0]["TagGroups_order"] || [];
     // 比較當前路線是否已存在
-    var INFS_ROUTE_ORDER = !isForPreview ?
-      JSON.parse(localStorage.getItem(`INFS_ROUTE_ORDER_${Brand}`)) || [] : [];
-    var INFS_ROUTE_RES = !isForPreview ?
-      JSON.parse(localStorage.getItem(`INFS_ROUTE_RES_${Brand}`)) || [] : [];
+    var INFS_ROUTE_ORDER = !isForPreview
+      ? JSON.parse(localStorage.getItem(`INFS_ROUTE_ORDER_${Brand}`)) || []
+      : [];
+    var INFS_ROUTE_RES = !isForPreview
+      ? JSON.parse(localStorage.getItem(`INFS_ROUTE_RES_${Brand}`)) || []
+      : [];
     // 當前路線
     current_route_path = {
       Route: current_Route,
@@ -551,36 +594,37 @@ const fetchData = async () => {
                     <div class="c_header" id="container-x-header" style="border-bottom: 4px solid #F5F5F4">
                         
                         <img class="type_backarrow" id="container-${r.replaceAll(
-          " ",
-          ""
-        )}-backarrow" src="${iconNext}" width="100%"
+                          " ",
+                          ""
+                        )}-backarrow" src="${iconNext}" width="100%"
                         height="100%" >
                         <div class="header-text">
                             <span style="margin-bottom: 0.3em">${r}</span>
-                            <p class="desc-container">${Route_in_frame[r].length > 0
-          ? Route_in_frame[r][0].Description?.S
-          : ""
-        }</p>
+                            <p class="desc-container">${
+                              Route_in_frame[r].length > 0
+                                ? Route_in_frame[r][0].Description?.S
+                                : ""
+                            }</p>
                         </div>
                         <img class='c-${r.replaceAll(
-          " ",
-          ""
-        )} skip icon-next type_backarrow flipped-image' src="${iconNext}" width="100%"
+                          " ",
+                          ""
+                        )} skip icon-next type_backarrow flipped-image' src="${iconNext}" width="100%"
                         height="100%" >
                     </div>
 
                         <div class="selection_scroll slide swiper-container-${r.replaceAll(
-          " ",
-          ""
-        )}">
+                          " ",
+                          ""
+                        )}">
                             <div class="swiper-wrapper" >
                             </div>         
                         </div>
                     
                          <div class="pagination-${r.replaceAll(
-          " ",
-          ""
-        )} pag-margin dot-btns" style="text-align: center; ">
+                           " ",
+                           ""
+                         )} pag-margin dot-btns" style="text-align: center; ">
                         </div>
                      <div class="con-footer">
                         <a class='c-${r.replaceAll(" ", "")} skip'>略過</a>
@@ -987,8 +1031,10 @@ const fetchData = async () => {
           console.log(".c-" + currentRoute);
 
           // 檢查並設定預設值
-          var INFS_ROUTE_ORDER = !isForPreview ?
-            JSON.parse(localStorage.getItem(`INFS_ROUTE_ORDER_${Brand}`)) || [] : [];
+          var INFS_ROUTE_ORDER = !isForPreview
+            ? JSON.parse(localStorage.getItem(`INFS_ROUTE_ORDER_${Brand}`)) ||
+              []
+            : [];
           const match = INFS_ROUTE_ORDER.find((item) =>
             deepEqualWithoutKey(item, current_route_path, ["Record"])
           );
@@ -1027,7 +1073,7 @@ const fetchData = async () => {
           $(".c-" + currentRoute + ".skip")
             .off(mytap)
             .on(mytap, function (e) {
-              console.error('$(this) SKIP', $(this))
+              console.error("$(this) SKIP", $(this));
               // if ($(this).text() == "略過") {
               var tag = `c-${all_Route[fs]}`;
               $(`.${tag}.tag-selected`).removeClass("tag-selected");
@@ -1042,14 +1088,13 @@ const fetchData = async () => {
                 },
               ];
               // 修改符合條件的物件後更新 INFS_ROUTE_ORDER
-              var INFS_ROUTE_ORDER = !isForPreview ?
-                JSON.parse(
-                  localStorage.getItem(`INFS_ROUTE_ORDER_${Brand}`)
-                ) || [] : [];
+              var INFS_ROUTE_ORDER = !isForPreview
+                ? JSON.parse(
+                    localStorage.getItem(`INFS_ROUTE_ORDER_${Brand}`)
+                  ) || []
+                : [];
               INFS_ROUTE_ORDER.forEach((item, index) => {
-                if (
-                  deepEqualWithoutKey(item, current_route_path, ["Record"])
-                ) {
+                if (deepEqualWithoutKey(item, current_route_path, ["Record"])) {
                   INFS_ROUTE_ORDER[index] = {
                     ...item,
                     Record: tags_chosen, // 修改 Record
@@ -1215,7 +1260,289 @@ const fetchData = async () => {
   }
 };
 var tap = window.ontouchstart === null ? "touchend" : "click";
+$("#email-skip").on(tap, function () {
+  const messageData = {
+    type: "send-email-skip",
+    value: true,
+  };
+  // window.parent.postMessage(messageData, "*");
+});
+let isProcessing = false;
+$("#subscribeBtn").on(tap, function () {
+  if (isProcessing) return;
 
+  isProcessing = true;
+  // 操作完成後啟用（例如 2 秒後）
+  setTimeout(() => {
+    isProcessing = false;
+  }, 2000);
+  const email = $(".email-content input").val().trim();
+  if (!email) {
+    // alert("請輸入有效的 email 地址");
+    return;
+  }
+  // 檢查 email 格式
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    // alert("請輸入正確格式的 email，例如：example@mail.com");
+    const messageData = {
+      type: "send-email-valid",
+      value: true,
+    };
+    window.parent.postMessage(messageData, "*");
+    return;
+  }
+  if ($("#subscribeBtn").hasClass("loading")) {
+    $("#email-skip").prop("disabled", true);
+    return;
+  }
+
+  // 初始化狀態
+  $("#subscribeBtn").removeClass("sent").addClass("loading");
+  $("#email-skip").prop("disabled", true);
+
+  $("#subscribeBtn--loading").css({ display: "block", opacity: 1 });
+  $("#subscribeBtn-finish").css({ display: "none", opacity: 0 });
+
+  if (edmResult && edmResult.length > 0) {
+    const template = document
+      .getElementById("emailTemplate")
+      .content.cloneNode(true);
+    const productHtmlArray = generateProductHtml(edmResult);
+
+    if (edmResult.length >= 6) {
+      const placeholders = template.querySelectorAll(".product-placeholder");
+      placeholders[0].innerHTML = productHtmlArray[0];
+      placeholders[1].innerHTML = productHtmlArray[1];
+      placeholders[2].innerHTML = productHtmlArray[2];
+      placeholders[3].innerHTML = productHtmlArray[3];
+      placeholders[4].innerHTML = productHtmlArray[4];
+      placeholders[5].innerHTML = productHtmlArray[5];
+    } else {
+      console.warn("Not enough products returned from API");
+      const messageData = {
+        type: "send-email-error",
+        value: true,
+      };
+      window.parent.postMessage(messageData, "*");
+      return;
+    }
+
+    const emailTemplate = new XMLSerializer().serializeToString(template);
+
+    $.ajax({
+      url: "https://1r67xu2nn6.execute-api.ap-northeast-1.amazonaws.com/default/mail_edm_invoke",
+      method: "POST",
+      contentType: "application/json",
+      data: JSON.stringify({
+        to_email: email,
+        subject: "每件商品都是你的風格代表作，獻給獨樹一幟的你。",
+        html_body: emailTemplate,
+      }),
+      success: function (response) {
+        console.log("✅ Email sent successfully:", response);
+        $("#subscribeBtn").addClass("sent");
+        $("#email-skip").prop("disabled", true);
+        // ✅ 先 fadeOut loading，等動畫完成後才顯示 finish
+        $("#subscribeBtn--loading").animate({ opacity: 0 }, 400, () => {
+          $("#subscribeBtn--loading").css("display", "none");
+
+          // ✅ 在 loading 完全隱藏後才開始顯示 finish（動畫進場）
+          $("#subscribeBtn-finish")
+            .css("display", "block")
+            .animate({ opacity: 1 }, 400);
+
+          const messageData = {
+            type: "send-email-finish",
+            value: true,
+          };
+          window.parent.postMessage(messageData, "*");
+        });
+
+        // 3 秒後還原按鈕狀態
+        setTimeout(() => {
+          $("#subscribeBtn").removeClass("loading sent");
+          $("#subscribeBtn--send").show();
+          $("#subscribeBtn-finish").css({ display: "none", opacity: 0 });
+          $("#email-skip").prop("disabled", false);
+        }, 3000);
+      },
+      error: function (xhr, status, error) {
+        console.error("❌ Email sending failed:", {
+          status,
+          error,
+          response: xhr.responseText,
+        });
+        const messageData = {
+          type: "send-email-error",
+          value: true,
+        };
+        window.parent.postMessage(messageData, "*");
+        // alert("發送失敗，請查看控制台日誌");
+        // ✅ 還原按鈕與顯示狀態
+        $("#subscribeBtn").removeClass("loading sent");
+        $("#subscribeBtn--loading").css({ display: "none", opacity: 0 });
+        $("#subscribeBtn-finish").css({ display: "none", opacity: 0 });
+        $("#subscribeBtn--send").show();
+
+        // ✅ 清空輸入欄位
+        $(".email-content input").val("");
+
+        // ✅ 啟用略過按鈕
+        $("#email-skip").prop("disabled", false);
+      },
+    });
+  } else {
+    const messageData = {
+      type: "send-email-error",
+      value: true,
+    };
+    window.parent.postMessage(messageData, "*");
+    // ✅ 還原按鈕與顯示狀態
+    $("#subscribeBtn").removeClass("loading sent");
+    $("#subscribeBtn--loading").css({ display: "none", opacity: 0 });
+    $("#subscribeBtn-finish").css({ display: "none", opacity: 0 });
+    $("#subscribeBtn--send").show();
+
+    // ✅ 清空輸入欄位
+    $(".email-content input").val("");
+
+    // ✅ 啟用略過按鈕
+    $("#email-skip").prop("disabled", false);
+  }
+});
+
+function ids_init() {
+  var makeid = function (length) {
+    var result = "";
+    var characters =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    var charactersLength = characters.length;
+    for (var i = 0; i < length; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+  };
+
+  var member_id = "";
+  var lgiven_id = "";
+  var skuContent = "627b5ab044a027000fde0add";
+
+  var lgvid_exist = false;
+  try {
+    if (typeof localStorage["LGVID"] !== "undefined") {
+      lgvid_exist = true;
+    }
+  } catch (e) {
+    lgvid_exist = false;
+  }
+  if (lgvid_exist) {
+    lgiven_id = localStorage["LGVID"];
+  } else {
+    lgiven_id = makeid(20);
+    localStorage.setItem("LGVID", lgiven_id);
+  }
+
+  return { member_id: member_id, lgiven_id: lgiven_id, skuContent: skuContent };
+}
+
+function getEmbeddedAds(ids) {
+  const requestData = {
+    Brand: Brand,
+    LGVID: ids.lgiven_id,
+    MRID: ids.member_id,
+    recom_num: "12",
+    PID: ids.skuContent,
+    ctype_val: JSON.stringify(["underwear"]),
+  };
+  const options = {
+    method: "POST",
+    headers: {
+      accept: "application/json",
+      "content-type": "application/json",
+    },
+    body: JSON.stringify(requestData),
+  };
+
+  function getRandomElements(arr, count) {
+    const result = [];
+    const usedIndexes = new Set();
+    while (result.length < count) {
+      const randomIndex = Math.floor(Math.random() * arr.length);
+      if (!usedIndexes.has(randomIndex)) {
+        result.push(arr[randomIndex]);
+        usedIndexes.add(randomIndex);
+      }
+    }
+    return result;
+  }
+
+  return fetch(
+    "https://gha6kqf5ff.execute-api.ap-northeast-1.amazonaws.com/v0/extension/recom_product",
+    options
+  )
+    .then((response) => response.json())
+    .then((response) => {
+      let jsonData = getRandomElements(response["bhv"], 12).map((item) => {
+        let newItem = Object.assign({}, item);
+        newItem.sale_price = item.sale_price
+          ? parseInt(item.sale_price.replace(/\D/g, "")).toLocaleString()
+          : "";
+        newItem.price = parseInt(
+          item.price.replace(/\D/g, "")
+        ).toLocaleString();
+        return newItem;
+      });
+      return jsonData;
+    })
+    .catch((err) => {
+      console.error("API Error:", err);
+      throw err;
+    });
+}
+
+function generateProductHtml(images) {
+  return images.slice(0, 6).map((img) => {
+    return `
+              <a class="embeddedItem" href="${
+                img.link
+              }" target="_blank" data-title="${img.title}" data-link="${
+      img.link
+    }" style="text-decoration: none; color: #333333; display: block; width: 100%; overflow: hidden;">
+                  <div class="embeddedItem__img">
+                      <div class="embeddedItem__imgBox" style="background-color: #efefef;height: 226px;width:226px">
+                          <img src="${img.image_link}" alt="${
+      img.description
+    }" style="width: 100%; max-width: 100%; height: 100%; object-fit: cover; display: block;">
+                      </div>
+                  </div>
+                  <div class="embeddedItemInfo" style="overflow: hidden;">
+                      <h3 class="embeddedItemInfo__title" style="font-family: Arial, 'Noto Sans TC', sans-serif; font-size: 16px; color: #3B3B32; margin: 10px 0 5px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block; max-width: 240px; line-height: 20px; height: 20px;">${
+                        img.title
+                      }</h3>
+                      ${
+                        img.sale_price && img.sale_price !== img.price
+                          ? `<div class="embeddedItemInfo__content" style="font-family: Arial, 'Noto Sans TC', sans-serif; font-size: 14px; color: #333333; margin: 0; text-align: center; display: block; overflow: hidden;">
+                                  <p class="embeddedItemInfo__discount" style="color: #eb7454; background: white; border: 1px solid #eb7454; padding: 2px 6px; border-radius: 5px; font-size: 12px; font-weight: bold; margin: 0 8px 0 0; display: inline-block; max-width: 60px;">${Math.ceil(
+                                    100 -
+                                      (parseInt(
+                                        img.sale_price.replace(",", "")
+                                      ) *
+                                        100) /
+                                        parseInt(img.price.replace(",", ""))
+                                  )}% off</p>
+                                  <p class="embeddedItemInfo__price" style="color: #eb7454; font-size: 14px; font-weight: 500; margin: 0; display: inline-block;">NT$ ${
+                                    img.sale_price
+                                  }</p>
+                              </div>`
+                          : `<div class="embeddedItemInfo__content" style="font-family: Arial, 'Noto Sans TC', sans-serif; font-size: 14px; color: #333333; margin: 0; text-align: center; display: block; overflow: hidden;"> 
+                                  <p class="embeddedItemInfo__price" style="color: #eb7454; font-size: 14px; font-weight: 500; margin: 0; display: inline-block;">NT$ ${img.price}</p>
+                              </div>`
+                      }
+                  </div>
+              </a>
+          `;
+  });
+}
 $(".icon-inffits").on(tap, function () {
   $(".icon-inffits").toggleClass("open");
   $(".text-inffits").toggleClass("visible");
@@ -1260,7 +1587,6 @@ if (tap === "click") {
       $(".text-reminder").removeClass("visible");
     }
   );
-
 }
 
 $("#start-button").on(tap, function () {
@@ -1277,7 +1603,7 @@ $("#coupon-btn").on(tap, function () {
     value: true,
   };
   window.parent.postMessage(messageData, "*");
-})
+});
 // $("#coupon-btn").on(tap, function () {
 //   $("#loadingbar_recom").show();
 //   const $couponOverlay = $(`<div id="coupon-overlay"></div>`)
@@ -1382,12 +1708,24 @@ $("#recommend-btn").on(tap, function () {
   )
     .then((response) => response.json())
     .then((response) => {
+      edmResult = response.Item.map(({ ItemName, Imgsrc, Link, price,sale_price, ...rest }) => {
+        return {
+          link: Link,
+          image_link: Imgsrc,
+          title: ItemName,
+          price: price.replace('NT$', ''),
+          sale_price: sale_price.replace('NT$', ''),
+          ...rest
+        };
+      });
       const messageData = {
         type: "result",
         tags_chosen: tags_chosen,
         item: response.Item,
+        edmResult: edmResult,
         value: true,
       };
+
       window.parent.postMessage(messageData, "*");
       show_results(response);
       $("#recommend-title").text("精選推薦商品");
